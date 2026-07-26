@@ -39,5 +39,5 @@ with out:
         cc_msg = [0xB4, 3, cc]
         out.send_message(cc_msg)
         time.sleep(0.1)
-    out.sned_message(note_off)
-    time.sleep(1)
+    out.send_message(note_off)
+    time.sleep(0.1)
