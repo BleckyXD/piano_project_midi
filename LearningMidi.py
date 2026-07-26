@@ -20,24 +20,33 @@
 import time
 import rtmidi
 
-out = rtmidi.MidiOut()
+out = rtmidi.MidiOut()  #  MIDI Output
+inP = rtmidi.MidiIn()
+# Obtain the different ports
 ports_dict = {k: v for (v,k) in enumerate(out.get_ports())}
-out.open_port(ports_dict["OP-Z 1"])
 
-with out:
-    note_on = [0x94, 48, 112]
-    note_off = [0x84, 48, 0]
+# Get a specific port/available port
+out.open_port(ports_dict["ARIUS-1 1"])
+inP.open_port(ports_dict["ARIUS-1 1"])
 
-    cc_msg = [0xB4, 3, 0]
-    out.send_message(cc_msg)
-    time.sleep(0.1)
-
-    out.send_message(note_on)
-    time.sleep(1)
-
-    for cc in range(127):
-        cc_msg = [0xB4, 3, cc]
-        out.send_message(cc_msg)
-        time.sleep(0.1)
-    out.send_message(note_off)
-    time.sleep(0.1)
+def receivedInfo(event):
+    print(event)
+with inP:
+    inP.set_callback(receivedInfo)
+# with out:
+#     note_on = [0x94, 48, 112]
+#     note_off = [0x84, 48, 0]
+#
+#     cc_msg = [0xB4, 3, 0]
+#     out.send_message(cc_msg)
+#     time.sleep(0.1)
+#
+#     out.send_message(note_on)
+#     time.sleep(1)
+#
+#     for cc in range(127):
+#         cc_msg = [0xB4, 3, cc]
+#         out.send_message(cc_msg)
+#         time.sleep(0.1)
+#     out.send_message(note_off)
+#     time.sleep(0.1)
