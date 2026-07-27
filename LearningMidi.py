@@ -56,25 +56,44 @@
 import rtmidi
 import time
 
-inputMidi = rtmidi.MidiIn()
-def message(event, data=None):
-    keyPressed, a = event
+class music:
+    def __init__(self):
 
-    # Masking for the status of if the key was pressed or not
-    status = keyPressed[0] & 0xF0
-
-    if status == 0x90:
-        print("note on")
-    else:
-        print("note off")
+        self.portSelected = 0
+        self.inputMidi = rtmidi.MidiIn()
+        self.inputMidi.open_port(portSelected)
+        self.inputMidi.set_callback(self.message)
 
 
-for i, port in enumerate(inputMidi.get_ports()):
-    print(f"{port} [{i}]")
+
+
+
+    def message(self, event, data=None):
+        keyPressed, a = event
+
+        # Masking for the status of if the key was pressed or not
+        status = keyPressed[0] & 0xF0
+
+        if status == 0x90:
+            print("note on")
+        else:
+            print("note off")
+
+
+
+
+
+
+
 
 portSelected = int(input("Choose available port: "))
-inputMidi.open_port(portSelected)
-inputMidi.set_callback(message)
+
+mus = music()
+mus.portSelected = portSelected
+
+
+
+
 try:
     input()
 except KeyboardInterrupt:
