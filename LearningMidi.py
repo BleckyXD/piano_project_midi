@@ -56,15 +56,6 @@
 import rtmidi
 import time
 
-
-
-
-
-
-
-
-
-
 def message(event, data=None):
     keyPressed, a = event
 
@@ -72,7 +63,7 @@ def message(event, data=None):
     status = keyPressed[0] & 0xF0
     if status == 0x90:
         print("note on")
-        print(f"velocity: {keyPressed[2]}")
+        print(f"velocity: {keyPressed[2]} | Pitch: {keyPressed[1]} | Channel: {keyPressed[0]:#X}" )
         outputMidi.send_message(keyPressed)
         time.sleep(0.1)
         outputMidi.send_message([keyPressed[0], keyPressed[1], 0])
