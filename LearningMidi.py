@@ -61,10 +61,12 @@ def doubleNote(pitch, velocity):
     noteOn = [0x94, pitch, velocity]
     noteOff = [0x84, pitch, 0]
     outputMidi.send_message(noteOn)
-    time.sleep(0.2)
+    time.sleep(0.1)
     outputMidi.send_message(noteOff)
-    time.sleep(0.00)
+    time.sleep(0.05)
     outputMidi.send_message(noteOn)
+    time.sleep(0.1)
+    outputMidi.send_message(noteOff)
 
 def message(event, data=None):
     keyPressed, a = event
@@ -81,10 +83,10 @@ def message(event, data=None):
         #hex 94 = 148
         #hex 84 = 132
 
-    else:
-        print("note off")
-        noteOff = [0x84, pitch, 0]
-        outputMidi.send_message(noteOff)
+    # else:
+    #     print("note off")
+    #     noteOff = [0x84, pitch, 0]
+    #     outputMidi.send_message(noteOff)
 
 
 
