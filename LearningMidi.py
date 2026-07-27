@@ -70,11 +70,11 @@ def message(event, data=None):
 
     # Masking for the status of if the key was pressed or not
     status = keyPressed[0] & 0xF0
-
     if status == 0x90:
         print("note on")
+        print(f"velocity: {keyPressed[2]}")
         outputMidi.send_message(keyPressed)
-        time.sleep(1.0)
+        time.sleep(0.1)
         outputMidi.send_message([keyPressed[0], keyPressed[1], 0])
         time.sleep(0.1)
 
