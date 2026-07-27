@@ -80,7 +80,7 @@ def message(event, data=None):
         print(f"OFF Channel = {keyPressed[0]:#X}")
         outputMidi.send_message([0x94, pitch, 0])
         time.sleep(0.1)
-
+#
     else:
         print("note off")
 
