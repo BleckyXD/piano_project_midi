@@ -57,16 +57,32 @@ import rtmidi
 import time
 import threading
 
+notePlaying = {}
+
 def doubleNote(pitch, velocity):
     noteOn = [0x94, pitch, velocity]
     noteOff = [0x84, pitch, 0]
+
+    currentThread = threading.get_ident()
+    notePlaying[pitch] = currentThread
+
     outputMidi.send_message(noteOn)
     time.sleep(0.1)
+
+    if notePlaying.get(pitch) != currentThread:
+        return
+
     outputMidi.send_message(noteOff)
     time.sleep(0.05)
+
+    if notePlaying.get(pitch) != currentThread:
+        return
     outputMidi.send_message(noteOn)
     time.sleep(0.1)
     outputMidi.send_message(noteOff)
+
+    if notePlaying.get(pitch) == currentThread:
+        del notePlaying[pitch]
 
 def message(event, data=None):
     keyPressed, a = event
@@ -79,6 +95,10 @@ def message(event, data=None):
     if status == 0x90 and keyPressed[2] > 0:
         print("note on")
         print(f"velocity: {keyPressed[2]} | Pitch: {keyPressed[1]} | Channel: {keyPressed[0]:#X}" )
+
+        if pitch in notePlaying:
+            outputMidi.send_message([0x84, pitch, 0])
+
         threading.Thread(target=doubleNote, args=(pitch, velocity), daemon=True).start()
         #hex 94 = 148
         #hex 84 = 132
