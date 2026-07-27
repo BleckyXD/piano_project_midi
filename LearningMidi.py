@@ -66,25 +66,38 @@ def doubleNote(pitch, velocity):
     currentThread = threading.get_ident()
     notePlaying[pitch] = currentThread
 
-    outputMidi.send_message(noteOn)
-    time.sleep(0.1)
+    time.sleep(0.2)
 
-    #Checks if it is still the active thread. If not, it returns
     if notePlaying.get(pitch) != currentThread:
-        outputMidi.send_message(noteOff)
         return
 
-
-    outputMidi.send_message(noteOff)
-    time.sleep(0.05)
-
-
     outputMidi.send_message(noteOn)
-    time.sleep(0.1)
-    outputMidi.send_message(noteOff)
 
+    time.sleep(0.1)
+
+    outputMidi.send_message(noteOff)
     if notePlaying.get(pitch) == currentThread:
         del notePlaying[pitch]
+
+    # outputMidi.send_message(noteOn)
+    # time.sleep(0.1)
+    #
+    # #Checks if it is still the active thread. If not, it returns
+    # if notePlaying.get(pitch) != currentThread:
+    #     outputMidi.send_message(noteOff)
+    #     return
+    #
+    #
+    # outputMidi.send_message(noteOff)
+    # time.sleep(0.05)
+    #
+    #
+    # outputMidi.send_message(noteOn)
+    # time.sleep(0.1)
+    # outputMidi.send_message(noteOff)
+    #
+    # if notePlaying.get(pitch) == currentThread:
+    #     del notePlaying[pitch]
 
 def message(event, data=None):
     keyPressed, a = event
