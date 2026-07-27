@@ -69,8 +69,11 @@ def doubleNote(pitch, velocity):
     outputMidi.send_message(noteOn)
     time.sleep(0.1)
 
+    #Checks if it is still the active thread. If not, it returns
     if notePlaying.get(pitch) != currentThread:
+        outputMidi.send_message(noteOff)
         return
+
 
     outputMidi.send_message(noteOff)
     time.sleep(0.05)
@@ -127,7 +130,8 @@ outputMidi.open_port(outPort)
 inputMidi.set_callback(message)
 
 try:
-    input()
+    while True:
+        time.sleep(1)
 except KeyboardInterrupt:
     pass
 
