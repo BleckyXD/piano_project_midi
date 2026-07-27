@@ -64,6 +64,8 @@ def message(event, data=None):
     if status == 0x90:
         print("note on")
         print(f"velocity: {keyPressed[2]} | Pitch: {keyPressed[1]} | Channel: {keyPressed[0]:#X}" )
+
+        keyPressed[0] += 4
         outputMidi.send_message(keyPressed)
         time.sleep(0.1)
         outputMidi.send_message([keyPressed[0], keyPressed[1], 0])
