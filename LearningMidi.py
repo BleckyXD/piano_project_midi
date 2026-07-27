@@ -62,27 +62,21 @@ def message(event, data=None):
     print(f"Channel: {keyPressed[0]:#X}")
     # Masking for the status of if the key was pressed or not
     status = keyPressed[0] & 0xF0
-    if status == 0x90:
-        print("note on")
-        print(f"velocity: {keyPressed[2]} | Pitch: {keyPressed[1]} | Channel: {keyPressed[0]:#X}" )
+    pitch = keyPressed[1]
+    velocity = keyPressed[2]
+    noteOn = [0x94, pitch, velocity]
+    noteOff = [0x84, pitch, 0]
+    if status == 0x90 and keyPressed[2] > 0:
+        with outputMidi:
+            print("note on")
+            print(f"velocity: {keyPressed[2]} | Pitch: {keyPressed[1]} | Channel: {keyPressed[0]:#X}" )
 
-    #hex 94 = 148
-    #hex 84 = 132
-        print(f"New Channel= {keyPressed[0]:#X}")
-
-        pitch = keyPressed[1]
-        velocity = keyPressed[2]
-
-        outputMidi.send_message([0x94, keyPressed[1], velocity])
-        time.sleep(0.1)
-
-        keyPressed[0] -= 16
-        print(f"OFF Channel = {keyPressed[0]:#X}")
-        outputMidi.send_message([0x94, pitch, 0])
-        time.sleep(0.1)
-#
+            #hex 94 = 148
+            #hex 84 = 132
+            outputMidi.send_message(noteOn)
     else:
         print("note off")
+        outputMidi.send_message(noteOff)
 
 
 inputMidi = rtmidi.MidiIn()
