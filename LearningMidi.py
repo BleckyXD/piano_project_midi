@@ -58,7 +58,6 @@ import time
 
 def message(event, data=None):
     keyPressed, a = event
-    keyPressed[0] += 4
     print(f"Channel: {keyPressed[0]:#X}")
     # Masking for the status of if the key was pressed or not
     status = keyPressed[0] & 0xF0
@@ -67,13 +66,12 @@ def message(event, data=None):
     noteOn = [0x94, pitch, velocity]
     noteOff = [0x84, pitch, 0]
     if status == 0x90 and keyPressed[2] > 0:
-        with outputMidi:
-            print("note on")
-            print(f"velocity: {keyPressed[2]} | Pitch: {keyPressed[1]} | Channel: {keyPressed[0]:#X}" )
+        print("note on")
+        print(f"velocity: {keyPressed[2]} | Pitch: {keyPressed[1]} | Channel: {keyPressed[0]:#X}" )
 
-            #hex 94 = 148
-            #hex 84 = 132
-            outputMidi.send_message(noteOn)
+        #hex 94 = 148
+        #hex 84 = 132
+        outputMidi.send_message(noteOn)
     else:
         print("note off")
         outputMidi.send_message(noteOff)
@@ -84,10 +82,14 @@ outputMidi = rtmidi.MidiOut()
 
 for i, port in enumerate(inputMidi.get_ports()):
     print(f"[{port}] {i}")
-port = int(input("Choose available port: "))
+InPort = int(input("Choose available port: "))
+inputMidi.open_port(InPort)
 
-inputMidi.open_port(port)
-outputMidi.open_port(port)
+for i, port in enumerate(outputMidi.get_ports()):
+    print(f"[{i}] {port}")
+outPort = int(input("Choose OUTPUT port: "))
+
+outputMidi.open_port(outPort)
 
 inputMidi.set_callback(message)
 
