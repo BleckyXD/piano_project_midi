@@ -61,16 +61,21 @@ class music:
 
         self.portSelected = 0
         self.inputMidi = rtmidi.MidiIn()
-        self.inputMidi.open_port(portSelected)
+        self.inputMidi.open_port(self.portSelected)
         self.inputMidi.set_callback(self.message)
 
+        self.outputMidi = rtmidi.MidiOut()
+        self.outputMidi.open_port(self.portSelected)
+
+
+        self.currentKey = 0
 
 
 
 
     def message(self, event, data=None):
         keyPressed, a = event
-
+        self.currentKey = keyPressed
         # Masking for the status of if the key was pressed or not
         status = keyPressed[0] & 0xF0
 
@@ -78,6 +83,10 @@ class music:
             print("note on")
         else:
             print("note off")
+            self.outputMidi.send_message(keyPressed)
+            time.sleep(1.0)
+            self.outputMidi.send_message([keyPressed[0], keyPressed[1], 0])
+            time.sleep(0.1)
 
 
 
@@ -86,10 +95,13 @@ class music:
 
 
 
-portSelected = int(input("Choose available port: "))
+
 
 mus = music()
-mus.portSelected = portSelected
+for i, port in enumerate(mus.inputMidi.get_ports()):
+    print(f"[{port}] {i}")
+port = int(input("Choose available port: "))
+mus.portSelected = port
 
 
 
