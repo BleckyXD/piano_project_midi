@@ -56,37 +56,6 @@
 import rtmidi
 import time
 
-class music:
-    def __init__(self):
-
-        self.portSelected = 0
-        self.inputMidi = rtmidi.MidiIn()
-        self.inputMidi.open_port(self.portSelected)
-        self.inputMidi.set_callback(self.message)
-
-        self.outputMidi = rtmidi.MidiOut()
-        self.outputMidi.open_port(self.portSelected)
-
-
-        self.currentKey = 0
-
-
-
-
-    def message(self, event, data=None):
-        keyPressed, a = event
-        self.currentKey = keyPressed
-        # Masking for the status of if the key was pressed or not
-        status = keyPressed[0] & 0xF0
-
-        if status == 0x90:
-            print("note on")
-        else:
-            print("note off")
-            self.outputMidi.send_message(keyPressed)
-            time.sleep(1.0)
-            self.outputMidi.send_message([keyPressed[0], keyPressed[1], 0])
-            time.sleep(0.1)
 
 
 
@@ -96,15 +65,34 @@ class music:
 
 
 
+def message(event, data=None):
+    keyPressed, a = event
 
-mus = music()
-for i, port in enumerate(mus.inputMidi.get_ports()):
+    # Masking for the status of if the key was pressed or not
+    status = keyPressed[0] & 0xF0
+
+    if status == 0x90:
+        print("note on")
+        outputMidi.send_message(keyPressed)
+        time.sleep(1.0)
+        outputMidi.send_message([keyPressed[0], keyPressed[1], 0])
+        time.sleep(0.1)
+
+    else:
+        print("note off")
+
+
+inputMidi = rtmidi.MidiIn()
+outputMidi = rtmidi.MidiOut()
+
+for i, port in enumerate(inputMidi.get_ports()):
     print(f"[{port}] {i}")
 port = int(input("Choose available port: "))
-mus.portSelected = port
 
+inputMidi.open_port(port)
+outputMidi.open_port(port)
 
-
+inputMidi.set_callback(message)
 
 try:
     input()
