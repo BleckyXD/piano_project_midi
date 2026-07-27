@@ -75,8 +75,7 @@ def doubleNote(pitch, velocity):
     outputMidi.send_message(noteOff)
     time.sleep(0.05)
 
-    if notePlaying.get(pitch) != currentThread:
-        return
+
     outputMidi.send_message(noteOn)
     time.sleep(0.1)
     outputMidi.send_message(noteOff)
@@ -101,6 +100,7 @@ def message(event, data=None):
 
         threading.Thread(target=doubleNote, args=(pitch, velocity), daemon=True).start()
         #hex 94 = 148
+        print(notePlaying)
         #hex 84 = 132
 
     # else:
