@@ -15,7 +15,8 @@ def on_message(event, data=None):
     if status == 0x90 and message[2] > 0:  # Note On (velocity > 0)
         note = message[1]
         velocity = message[2]
-        print(f"▶ {note_to_name(note):4s}  (MIDI {note})  vel={velocity}")
+        channel = message[0]
+        print(f"▶ {note_to_name(note):4s}  (MIDI {note})  vel={velocity}  chan={channel:#X}")
     elif status == 0x80 or (status == 0x90 and message[2] == 0):  # Note Off
         note = message[1]
         print(f"  {note_to_name(note):4s}  released")
