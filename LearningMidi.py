@@ -58,7 +58,15 @@ import time
 
 inputMidi = rtmidi.MidiIn()
 def message(event, data=None):
-    print(event)
+    keyPressed, a = event
+
+    # Masking for the status of if the key was pressed or not
+    status = keyPressed[0] & 0xF0
+
+    if status == 0x90:
+        print("note on")
+    else:
+        print("note off")
 
 
 for i, port in enumerate(inputMidi.get_ports()):
